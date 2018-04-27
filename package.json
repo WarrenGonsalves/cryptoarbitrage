@@ -1,0 +1,17 @@
+{
+  "name": "cryptoarbitrage",
+  "version": "1.0.0",
+  "description": "Cryptocurrency Arbitrage",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Warren",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "cron": "^1.3.0",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2"
+  }
+}
