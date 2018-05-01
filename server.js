@@ -2,8 +2,29 @@ var CronJob = require('cron').CronJob;
 var request = require('request');
 var rp = require('request-promise');
 var Promise = require("bluebird");
-var currency = 'ETH';
-var coins = ['ZEC', 'XRP']
+// var currency = 'ETH';
+// var currencyHitbtc = 'USD';
+var coins = [{
+		coin: 'XRP',
+		currBittrex: 'USDT',
+		currHitbtc: 'USDT',
+	},{
+		coin: 'ETH',
+		currBittrex: 'USDT',
+		currHitbtc: 'USD',
+	},{
+		coin: 'NEO',
+		currBittrex: 'USDT',
+		currHitbtc: 'USD',
+	},{
+		coin: 'LTC',
+		currBittrex: 'USDT',
+		currHitbtc: 'USD',
+	},{
+		coin: 'XEM',
+		currBittrex: 'ETH',
+		currHitbtc: 'ETH',
+	}]
 const fs = require('fs');
 const moment = require('moment');
 
@@ -97,7 +118,7 @@ let totalXRPQuantity = 53;
 //   });
 // });
 
-function compareRates(promiseList, coin) {
+function compareRates(promiseList, pair) {
 	
 	Promise.all(promiseList)
 	.then(function(data) {  
@@ -116,7 +137,7 @@ function compareRates(promiseList, coin) {
 			// console.log("hitbtc ",data[3][0].price, data[3][0].side)	
    //  }
 		
-		writeToLog(coin + 'ETHBittrexHitbtc.txt', log);
+		writeToLog(pair.coin + 'BittrexHitbtc.txt', log);
 		// console.log( parseFloat(data[1].bid[0].price), data[0].result.sell[0].Rate );
 		// console.log("---- Arbit ----")
     let arbit = [( parseFloat(data[1].bid[0].price) / data[0].result.sell[0].Rate ) * 100 - 100];
@@ -127,10 +148,10 @@ function compareRates(promiseList, coin) {
 	});
 }
 
-function getBittrixOrderBook(coin) {
+function getBittrixOrderBook(pair) {
 	var options = { method: 'GET',
 	  url: 'https://bittrex.com/api/v1.1/public/getorderbook',
-	  qs: { type: 'both', market: `${currency}-${coin}` },
+	  qs: { type: 'both', market: `${pair.currBittrex}-${pair.coin}` },
 	  json: true
 	};
 
@@ -139,9 +160,9 @@ function getBittrixOrderBook(coin) {
 }
 
 
-function getHitbtcOrderBook(coin) {
+function getHitbtcOrderBook(pair) {
 	var options = { method: 'GET',
-	  url: `https://api.hitbtc.com/api/2/public/orderbook/${coin}${currency}`,
+	  url: `https://api.hitbtc.com/api/2/public/orderbook/${pair.coin}${pair.currHitbtc}`,
 	  json: true
 	};
 
@@ -149,10 +170,10 @@ function getHitbtcOrderBook(coin) {
 
 }
 
-function getBittrixLastTrade() {
+function getBittrixLastTrade(pair) {
 	var options = { method: 'GET',
 	  url: 'https://bittrex.com/api/v1.1/public/getmarkethistory',
-	  qs: { market: `${currency}-${coin}` },
+	  qs: { market: `${pair.currBittrex}-${pair.coin}` },
 	  json: true
 	};
 
@@ -161,10 +182,10 @@ function getBittrixLastTrade() {
 }
 
 
-function getHitbtcLastTrade() {
+function getHitbtcLastTrade(pair) {
 	console.log('hitbtc last')
 	var options = { method: 'GET',
-	  url: `https://api.hitbtc.com/api/2/public/trades/${coin}${currency}?sort=DESC`,
+	  url: `https://api.hitbtc.com/api/2/public/trades/${pair.coin}${pair.currHitbtc}?sort=DESC`,
 	  json: true
 	};
 
