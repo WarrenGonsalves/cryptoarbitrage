@@ -137,10 +137,14 @@ function compareRates(promiseList, pair) {
 			// console.log("hitbtc ",data[3][0].price, data[3][0].side)	
    //  }
 		
-		writeToLog(pair.coin + 'BittrexHitbtc.txt', log);
 		// console.log( parseFloat(data[1].bid[0].price), data[0].result.sell[0].Rate );
 		// console.log("---- Arbit ----")
-    let arbit = [( parseFloat(data[1].bid[0].price) / data[0].result.sell[0].Rate ) * 100 - 100];
+    let arbitBittHit = [( parseFloat(data[1].bid[0].price) / data[0].result.sell[0].Rate ) * 100 - 100];
+    let diffBittHit = parseFloat(data[1].bid[0].price) - data[0].result.sell[0].Rate;
+    let arbitHitBitt = [( data[0].result.buy[0].Rate / parseFloat(data[1].ask[0].price) ) * 100 - 100];
+    let diffHitBitt = data[0].result.buy[0].Rate - parseFloat(data[1].ask[0].price);
+    log += ',' + arbitBittHit + '%,' + diffBittHit  + ',' + arbitHitBitt + '%,' + diffHitBitt;
+		writeToLog(pair.coin + 'BittrexHitbtc.txt', log);
     // console.log(arbit)
 	})
 	.catch(function (err) {
@@ -263,7 +267,7 @@ function getHitbtcLastTrade(pair) {
 // });
 
 function writeToLog(filename, data) {
-	fs.appendFile(filename, data, function (err) {
+	fs.appendFile('./logs/' + moment().format('DD-MM-YYYY')+ filename, data, function (err) {
 	  if (err) console.log(err);
 	  // console.log('Saved!');
 	});
