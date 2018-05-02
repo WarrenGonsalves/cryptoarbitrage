@@ -122,7 +122,7 @@ function compareRates(promiseList, pair) {
 	
 	Promise.all(promiseList)
 	.then(function(data) {  
-		let log = '\n' + moment().format() + ',';
+		let log = '\n' + moment().format('HH:mm:ss') + ',';
   	// console.log("Bittrex OrderBook ", data[0].result.sell[0])
     log += data[0].result.buy[0].Quantity + ',' + data[0].result.buy[0].Rate + ',' + data[0].result.sell[0].Quantity + ',' + data[0].result.sell[0].Rate;
 
