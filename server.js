@@ -89,7 +89,7 @@ let totalXRPQuantity = 53;
 // 	start: true,
 // 	runOnInit:true
 // });
-
+// getCost("XRP", "ETH")
 // var job2 = new CronJob({
 // 	cronTime: '*/6 * * * * *',
 // 	onTick: function() {
@@ -187,7 +187,6 @@ function getBittrixLastTrade(pair) {
 
 
 function getHitbtcLastTrade(pair) {
-	console.log('hitbtc last')
 	var options = { method: 'GET',
 	  url: `https://api.hitbtc.com/api/2/public/trades/${pair.coin}${pair.currHitbtc}?sort=DESC`,
 	  json: true
@@ -197,9 +196,40 @@ function getHitbtcLastTrade(pair) {
 
 }
 
+function getCost(coin, currency) {
+	let hitbtcFee = 0.1;
+	let bittrexFee = 0.25;
 
+	let quantity = 10;
+	let transfer1Fee = 1;
+	let transfer2Fee = 0.006;				//ETH
 
+	Promise.all([getTicker(coin,currency)])
+	.then(function(data) {  
+		// console.log(data[0].result);
+		transfer2Fee = transfer2Fee/data[0].result.Last;
+		let ex1Fee = quantity * bittrexFee / 100;
+		let ex2Fee = quantity * hitbtcFee / 100;
+		// console.log(transfer1Fee , transfer2Fee , ex1Fee , ex2Fee)
+		let cost = transfer1Fee + transfer2Fee + ex1Fee + ex2Fee;
+		console.log(cost, (cost*100)/quantity);
 
+	})
+	.catch(function (err) {
+		console.log(err)
+	});
+	
+}
+
+function getTicker(coin, currency) {
+	var options = { method: 'GET',
+	  url: 'https://bittrex.com/api/v1.1/public/getticker',
+	  qs: { type: 'both', market: `${currency}-${coin}` },
+	  json: true
+	};
+
+	return rp(options)
+}
 //buyETHXRP(rate)
 // function buyETHXRP(rate, quantity = 53){
 //   totalXRPQuantity -= quantity
